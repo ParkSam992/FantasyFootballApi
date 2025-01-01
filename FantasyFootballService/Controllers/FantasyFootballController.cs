@@ -7,6 +7,7 @@ using FantasyFootballService.Models;
 using FantasyFootballService.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace FantasyFootballService.Controllers;
@@ -30,12 +31,14 @@ public class FantasyFootballController : PostgresControllerBase
      *  might need to either scrape the draft, or manually enter each pick
      */
 
+    private ILogger _logger;
     private readonly ISleeperService _sleeperService;
     private readonly IQueriesService _queriesService;
     private readonly ICacheService _cache;
 
-    public FantasyFootballController(IConfiguration config, ISleeperService sleeperService, IQueriesService queriesService, ICacheService cache) : base(config)
+    public FantasyFootballController(IConfiguration config, ILogger logger, ISleeperService sleeperService, IQueriesService queriesService, ICacheService cache) : base(config)
     {
+        _logger = logger;
         _sleeperService = sleeperService;
         _queriesService = queriesService;
         _cache = cache;
@@ -45,32 +48,62 @@ public class FantasyFootballController : PostgresControllerBase
     [Route("/getLeagueRosterRankings/{leagueId}")]
     [ProducesResponseType(typeof(List<LeagueMember>), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
-    public async Task<IActionResult> GetTeamKeepers(string leagueId, [FromQuery] MarketEnum market = MarketEnum.STD_SLEEPER)
+    public async Task<IActionResult> GetLeagueRosterRankings(string leagueId,
+        [FromQuery] MarketEnum market = MarketEnum.STD_SLEEPER)
     {
-        
         NpgsqlConnection conn = null;
 
         try
         {
             conn = OpenConnection();
-        
-        var roster = await _sleeperService.GetLeagueRosters(leagueId);
-        var playerRankings = await _queriesService.GetPlayerRankingByMarket(conn, market);
 
-        var leagueMembers = roster.Select(lm =>
-            new LeagueMember(lm, PlayerDataMapper.GetPlayerListFromIdList(playerRankings, lm.Roster))).ToList();
+            var roster = await _sleeperService.GetLeagueRosters(leagueId);
+            var playerRankings = await _queriesService.GetPlayerRankingByMarket(conn, market);
 
-        leagueMembers =
-            PlayerDataMapper.GetLeagueMemberNames(leagueMembers, await _cache.GetSleeperLeagueUsersAsync(leagueId));
-        
-        return Ok(leagueMembers); // TODO
-        
+            var leagueMembers = roster.Select(lm =>
+                new LeagueMember(lm, PlayerDataMapper.GetPlayerListFromIdList(playerRankings, lm.Roster))).ToList();
+
+            leagueMembers =
+                PlayerDataMapper.GetLeagueMemberNames(leagueMembers, await _cache.GetSleeperLeagueUsersAsync(leagueId));
+
+            return Ok(leagueMembers);
+
         }
         finally
         {
             CloseConnection(conn);
-        } 
+        }
     }
 
-    
+
+    [HttpGet]
+    [Route("/getPlayerRankings")]
+    [ProducesResponseType(typeof(List<Player>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> GetPlayerRankings([FromQuery] MarketEnum market = MarketEnum.STD_SLEEPER)
+    {
+        // TODO?: Should I add sorting here? Or should all the sorting be done on the FE
+        NpgsqlConnection conn = null;
+
+        try
+        {
+            conn = OpenConnection();
+            return Ok(await _queriesService.GetPlayerRankingByMarket(conn, market));
+        }
+        finally
+        {
+            CloseConnection(conn);
+        }
+    }
+
+    [HttpPost]
+    [Route("/refreshPlayerData")]
+    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> RefreshPlayerData()
+    {
+        var exitCode = await ShellHelper.Bash("bash Scripts/RefreshPlayerData.sh", _logger);
+        return Ok(exitCode == 0);
+    }
+
 }

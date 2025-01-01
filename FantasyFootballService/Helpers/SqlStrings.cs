@@ -2,6 +2,7 @@ namespace FantasyFootballService.Helpers;
 
 public class SqlStrings
 {
+    // TODO: Currently weighting the combo of Dynasty Daddy, and sleeper the same, may want to weight differently
     public const string GET_AVERAGE_RANKINGS =
         @"WITH ""dynasty_daddy_rankings"" AS (
             SELECT
