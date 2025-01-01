@@ -1,3 +1,5 @@
+using FantasyFootballService.Implementations;
+using FantasyFootballService.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddSingleton<ISleeperService, SleeperService>();
+builder.Services.AddSingleton<IQueriesService, QueriesService>();
 
 var app = builder.Build();
 

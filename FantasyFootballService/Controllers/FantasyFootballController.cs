@@ -1,15 +1,19 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using FantasyFootballService.Implementations;
+using FantasyFootballService.Helpers;
 using FantasyFootballService.Interfaces;
 using FantasyFootballService.Models;
+using FantasyFootballService.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace FantasyFootballService.Controllers;
 
 [ApiController]
 [Route("/v1")]
-public class FantasyFootballController : ControllerBase
+public class FantasyFootballController : PostgresControllerBase
 {
     /*
      * Current thoughts:
@@ -26,22 +30,47 @@ public class FantasyFootballController : ControllerBase
      *  might need to either scrape the draft, or manually enter each pick
      */
 
-    private readonly ISleeperApi _sleeperApi;
+    private readonly ISleeperService _sleeperService;
+    private readonly IQueriesService _queriesService;
+    private readonly ICacheService _cache;
 
-    public FantasyFootballController()
+    public FantasyFootballController(IConfiguration config, ISleeperService sleeperService, IQueriesService queriesService, ICacheService cache) : base(config)
     {
-        _sleeperApi = new SleeperApi();
+        _sleeperService = sleeperService;
+        _queriesService = queriesService;
+        _cache = cache;
     }
 
     [HttpGet]
-    [Route("/getLeagueRosters/{leagueId}")]
-    [ProducesResponseType(typeof(List<LeagueRoster>), 200)]
+    [Route("/getLeagueRosterRankings/{leagueId}")]
+    [ProducesResponseType(typeof(List<LeagueMember>), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
-    public async Task<IActionResult> GetLeagueRosters(string leagueId)
+    public async Task<IActionResult> GetTeamKeepers(string leagueId, [FromQuery] MarketEnum market = MarketEnum.STD_SLEEPER)
     {
-        // TODO: I want to manipulate the data so that I am returning player data here as well
-        //       maybe should cache all player data somewhere bc Ill need it on a bunch of endpoints
-        var roster = await _sleeperApi.GetLeagueRosters(leagueId);
-        return Ok(roster);
+        
+        NpgsqlConnection conn = null;
+
+        try
+        {
+            conn = OpenConnection();
+        
+        var roster = await _sleeperService.GetLeagueRosters(leagueId);
+        var playerRankings = await _queriesService.GetPlayerRankingByMarket(conn, market);
+
+        var leagueMembers = roster.Select(lm =>
+            new LeagueMember(lm, PlayerDataMapper.GetPlayerListFromIdList(playerRankings, lm.Roster))).ToList();
+
+        leagueMembers =
+            PlayerDataMapper.GetLeagueMemberNames(leagueMembers, await _cache.GetSleeperLeagueUsersAsync(leagueId));
+        
+        return Ok(leagueMembers); // TODO
+        
+        }
+        finally
+        {
+            CloseConnection(conn);
+        } 
     }
+
+    
 }
