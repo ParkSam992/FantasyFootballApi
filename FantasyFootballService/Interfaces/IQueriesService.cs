@@ -8,5 +8,7 @@ namespace FantasyFootballService.Interfaces;
 
 public interface IQueriesService
 {
-    Task<List<Player>> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market);
+    List<Player> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market);
+
+    List<PlayerTradeValue> GetPlayerTradeValue(NpgsqlConnection conn);
 }

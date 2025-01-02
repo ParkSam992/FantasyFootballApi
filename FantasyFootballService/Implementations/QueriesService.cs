@@ -12,25 +12,27 @@ namespace FantasyFootballService.Implementations;
 
 public class QueriesService : IQueriesService
 {
-    public async Task<List<Player>> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market)
+    public List<Player> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market)
     {
-        switch (market)
+        return market switch
         {
-            case MarketEnum.STD_AVERAGE:
-                return GetAverageRankings(conn);
-            case MarketEnum.STD_SLEEPER:
-                return GetSleeperRankings(conn);
-            case MarketEnum.STD_DYNASTY_DADDY:
-                return GetDynastyDaddyRankings(conn);
-            case MarketEnum.DYN_AVERAGE:
-                return GetAverageRankings(conn, true);
-            case MarketEnum.DYN_SLEEPER:
-                return GetSleeperRankings(conn, true);
-            case MarketEnum.DYN_DYNASTY_DADDY:
-                return GetDynastyDaddyRankings(conn, true);
-        }
+            MarketEnum.STD_AVERAGE => GetAverageRankings(conn),
+            MarketEnum.STD_SLEEPER => GetSleeperRankings(conn),
+            MarketEnum.STD_DYNASTY_DADDY => GetDynastyDaddyRankings(conn),
+            MarketEnum.DYN_AVERAGE => GetAverageRankings(conn, true),
+            MarketEnum.DYN_SLEEPER => GetSleeperRankings(conn, true),
+            MarketEnum.DYN_DYNASTY_DADDY => GetDynastyDaddyRankings(conn, true),
+            _ => new List<Player>()
+        };
+    }
 
-        return new List<Player>();
+    public List<PlayerTradeValue> GetPlayerTradeValue(NpgsqlConnection conn)
+    {
+        var cmd = PostgresCommandHelper.GetPlayerTradeValue(conn);
+        var strResponse = Convert.ToString(cmd.ExecuteScalar());
+        return string.IsNullOrWhiteSpace(strResponse) 
+            ? new List<PlayerTradeValue>() 
+            : JsonSerializer.Deserialize<List<PlayerTradeValue>>(strResponse);
     }
 
     public List<Player> GetAverageRankings(NpgsqlConnection conn, bool isDynasty = false)

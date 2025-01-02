@@ -28,4 +28,11 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
+    
+    public static NpgsqlCommand GetPlayerTradeValue(NpgsqlConnection conn)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.GET_PLAYER_TRADE_VALUE, conn);
+        cmd.Prepare();
+        return cmd;
+    }
 }
