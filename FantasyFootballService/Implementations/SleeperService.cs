@@ -41,4 +41,24 @@ public class SleeperService : ISleeperService
             ? null
             : JsonSerializer.Deserialize<List<SleeperMemberRoster>>(strResponse);
     }
+
+    public async Task<SleeperLeagueUser> GetUserByUsername(string username)
+    {
+        var route = $"/v1/user/{username}";
+        var response = await _client.GetAsync(_sleeperBaseUrl + route);
+        var strResponse = await response.Content.ReadAsStringAsync();
+        return string.IsNullOrWhiteSpace(strResponse)
+            ? null
+            : JsonSerializer.Deserialize<SleeperLeagueUser>(strResponse);
+    }
+    
+    public async Task<List<SleeperLeague>> GetUserLeagues(string userId, string sport, string year)
+    {
+        var route = $"/v1/user/{userId}/leagues/{sport}/{year}";
+        var response = await _client.GetAsync(_sleeperBaseUrl + route);
+        var strResponse = await response.Content.ReadAsStringAsync();
+        return string.IsNullOrWhiteSpace(strResponse)
+            ? null
+            : JsonSerializer.Deserialize<List<SleeperLeague>>(strResponse);
+    }
 }

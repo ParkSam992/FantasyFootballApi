@@ -5,6 +5,7 @@ using FantasyFootballService.Helpers;
 using FantasyFootballService.Interfaces;
 using FantasyFootballService.Models;
 using FantasyFootballService.Models.Enums;
+using FantasyFootballService.Models.Sleeper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,17 @@ public class FantasyFootballController : PostgresControllerBase
         _cache = cache;
     }
 
+    [HttpGet]
+    [Route("/getUserLeagues/{username}/{sport}/{year}")]
+    [ProducesResponseType(typeof(List<SleeperLeague>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> GetUserLeagues(string username, string sport, string year)
+    {
+        var user = await _sleeperService.GetUserByUsername(username);
+        var leagues = await _sleeperService.GetUserLeagues(user.UserId, sport, year);
+        return Ok(leagues);
+    }
+    
     [HttpGet]
     [Route("/getLeagueRosterRankings/{leagueId}")]
     [ProducesResponseType(typeof(List<LeagueMember>), 200)]
@@ -82,7 +94,7 @@ public class FantasyFootballController : PostgresControllerBase
     }
 
     [HttpGet]
-    [Route("/GetPlayerTradeValue")]
+    [Route("/getPlayerTradeValue")]
     [ProducesResponseType(typeof(bool), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     public IActionResult GetPlayerTradeValue()

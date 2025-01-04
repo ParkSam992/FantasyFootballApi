@@ -46,7 +46,7 @@ public class SqlStrings
         FROM ""sleeper_rankings"" a
         JOIN ""dynasty_daddy_rankings"" b ON a.""Id"" = b.""SleeperId""
         JOIN ""DynastyDaddyPlayerData"" c ON a.""Id"" = c.""SleeperId"";";
-    
+
     public const string GET_SLEEPER_RANKINGS =
         @"SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
@@ -68,7 +68,7 @@ public class SqlStrings
         FROM ""SleeperRankings"" a
         JOIN ""DynastyDaddyPlayerData"" b ON a.""Id"" = b.""SleeperId"";";
 
-    public const string GET_DYNASTY_DADDY_RANKINGS = 
+    public const string GET_DYNASTY_DADDY_RANKINGS =
         @"SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
                 'SleeperId', a.""SleeperId"",
@@ -98,7 +98,7 @@ public class SqlStrings
             GROUP BY ""SleeperId"", ""FirstName"", ""LastName"", ""Position""
         ) a;";
 
-    public const string GET_PLAYER_TRADE_VALUE = 
+    public const string GET_PLAYER_TRADE_VALUE =
         @"SELECT JSON_AGG(
             JSON_BUILD_OBJECT(
                 'SfTradeValue', a.""SFTradeValue""::varchar,
@@ -124,5 +124,5 @@ public class SqlStrings
                 b.""FirstName"",
                 b.""LastName"",
                 b.""Position""
-        ) a;"; 
+        ) a;";
 }
