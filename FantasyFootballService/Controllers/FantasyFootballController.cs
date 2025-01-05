@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using System;
+using System.Reflection.Emit;
+using FantasyFootballService.Extensions;
 
 namespace FantasyFootballService.Controllers;
 
@@ -120,5 +123,24 @@ public class FantasyFootballController : PostgresControllerBase
     {
         var exitCode = await ShellHelper.Bash("bash Scripts/RefreshPlayerData.sh", _logger);
         return Ok(exitCode == 0);
+    }
+
+    [HttpGet]
+    [Route("/getMarkets")]
+    [ProducesResponseType(typeof(MarketEnum), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public IActionResult GetMarkets()
+    {
+        var enumValues = Enum.GetValues(typeof(MarketEnum)).Cast<MarketEnum>().ToList();
+
+        return Ok(enumValues.Select(value =>
+        {
+            var enumDesc = value.GetDescription();
+            return new
+            {
+                Label = enumDesc,
+                Value = value
+            };
+        }));
     }
 }
