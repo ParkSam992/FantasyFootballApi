@@ -143,4 +143,13 @@ public class FantasyFootballController : PostgresControllerBase
             };
         }));
     }
+
+    [HttpGet]
+    [Route("/getDraftedPlayers/${draftId}")]
+    [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> GetDraftedPlayers(string draftId)
+    {
+        return Ok((await _sleeperService.GetAlreadyDraftedPlayers(draftId)).Data.DraftPicks);
+    }
 }

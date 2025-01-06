@@ -11,4 +11,5 @@ public interface ISleeperService
     Task<List<SleeperMemberRoster>> GetLeagueRosters(string leagueId);
     Task<SleeperLeagueUser> GetUserByUsername(string username);
     Task<List<SleeperLeague>> GetUserLeagues(string userId, string sport, string year);
+    Task<SleeperGraphqlResponse> GetAlreadyDraftedPlayers(string draftId);
 }
