@@ -21,9 +21,17 @@ public static class PostgresCommandHelper
         return cmd;
     }
     
-    public static NpgsqlCommand GetDynastyDaddyRankings(NpgsqlConnection conn, bool isDynasty)
+    public static NpgsqlCommand GetDynastyDaddyAverageRankings(NpgsqlConnection conn, bool isDynasty)
     {
-        var cmd = new NpgsqlCommand(SqlStrings.GET_DYNASTY_DADDY_RANKINGS, conn);
+        var cmd = new NpgsqlCommand(SqlStrings.GET_DYNASTY_DADDY_AVERAGE_RANKINGS, conn);
+        cmd.Parameters.AddWithValue("market", NpgsqlDbType.Varchar, isDynasty ? "DYN" : "STD");
+        cmd.Prepare();
+        return cmd;
+    }
+    
+    public static NpgsqlCommand GetKeepTradeCutRankings(NpgsqlConnection conn, bool isDynasty)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.GET_KEEP_TRADE_CUT_RANKINGS, conn);
         cmd.Parameters.AddWithValue("market", NpgsqlDbType.Varchar, isDynasty ? "DYN" : "STD");
         cmd.Prepare();
         return cmd;

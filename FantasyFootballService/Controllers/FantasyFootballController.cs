@@ -145,11 +145,15 @@ public class FantasyFootballController : PostgresControllerBase
     }
 
     [HttpGet]
-    [Route("/getDraftedPlayers/${draftId}")]
+    [Route("/getDraftedPlayers/{draftId}")]
     [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     public async Task<IActionResult> GetDraftedPlayers(string draftId)
     {
         return Ok((await _sleeperService.GetAlreadyDraftedPlayers(draftId)).Data.DraftPicks);
     }
+    
+    // TODO: Endpoint to add/remove preferred players (they could be highlighted on the FE)
+    
+    // TODO: Endpoint to manually enter player rankings (in case I wanted to copy over rankings that arent scrapable)
 }

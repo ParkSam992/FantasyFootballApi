@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FantasyFootballService.Models;
 using FantasyFootballService.Models.Enums;
 using Npgsql;
