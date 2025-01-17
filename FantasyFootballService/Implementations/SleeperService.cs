@@ -64,7 +64,7 @@ public class SleeperService : ISleeperService
             : JsonSerializer.Deserialize<List<SleeperLeague>>(strResponse);
     }
     
-    public async Task<SleeperGraphqlResponse> GetAlreadyDraftedPlayers(string draftId)
+    public async Task<List<SleeperDraftedPlayer>> GetAlreadyDraftedPlayers(string draftId)
     {
         var route = "/graphql";
         var body = new
@@ -77,6 +77,22 @@ public class SleeperService : ISleeperService
         var strResponse = await response.Content.ReadAsStringAsync();
         return string.IsNullOrWhiteSpace(strResponse)
             ? null
-            : JsonSerializer.Deserialize<SleeperGraphqlResponse>(strResponse);
+            : JsonSerializer.Deserialize<SleeperGraphqlResponse>(strResponse).Data.DraftPicks;
+    }
+
+    public async Task<SleeperDraft> GetDraftInfo(string draftId)
+    {
+        var route = "/graphql";
+        var body = new
+        {
+            query = GraphqlStrings.GET_DRAFT_INFO(draftId)
+        };
+        var jsonBody = JsonSerializer.Serialize(body);
+        var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        var response = await _client.PostAsync(_sleeperBaseUrl + route, content);
+        var strResponse = await response.Content.ReadAsStringAsync();
+        return string.IsNullOrWhiteSpace(strResponse)
+            ? null
+            : JsonSerializer.Deserialize<SleeperGraphqlResponse>(strResponse).Data.DraftInfo;
     }
 }

@@ -145,13 +145,26 @@ public class FantasyFootballController : PostgresControllerBase
     }
 
     [HttpGet]
+    [Route("/getDraftInfo/{draftId}")]
+    [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> GetDraftInfo(string draftId)
+    {
+        var draft = await _sleeperService.GetDraftInfo(draftId);
+        
+        
+        return Ok(new Draft(draft));
+    }
+    
+    [HttpGet]
     [Route("/getDraftedPlayers/{draftId}")]
     [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     public async Task<IActionResult> GetDraftedPlayers(string draftId)
     {
-        return Ok((await _sleeperService.GetAlreadyDraftedPlayers(draftId)).Data.DraftPicks);
+        return Ok(await _sleeperService.GetAlreadyDraftedPlayers(draftId));
     }
+
     
     // TODO: Endpoint to add/remove preferred players (they could be highlighted on the FE)
     

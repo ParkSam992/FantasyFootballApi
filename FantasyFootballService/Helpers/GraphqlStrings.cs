@@ -15,4 +15,14 @@ public static class GraphqlStrings
             $"    }}" +
             $"}}";
     }
+
+    public static string GET_DRAFT_INFO(string draftId)
+    {
+        return $"query get_draft {{" +
+               $"    draftInfo: get_draft(sport: \"nfl\" draft_id: \"{draftId}\") {{" +
+               $"        draftId: draft_id" +
+               $"        metaData: metadata" +
+               $"    }}" +
+               $"}}";
+    }
 }

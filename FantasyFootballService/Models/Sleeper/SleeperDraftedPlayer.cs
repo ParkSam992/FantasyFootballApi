@@ -1,19 +1,6 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace FantasyFootballService.Models.Sleeper;
-
-public class SleeperGraphqlResponse
-{
-    [JsonPropertyName("data")]
-    public SleeperDraftPicks Data { get; set; }
-}
-
-public class SleeperDraftPicks
-{
-    [JsonPropertyName("draftPicks")]
-    public List<SleeperDraftedPlayer> DraftPicks { get; set; }
-}
 
 public class SleeperDraftedPlayer
 {
