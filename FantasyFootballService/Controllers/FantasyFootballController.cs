@@ -151,8 +151,6 @@ public class FantasyFootballController : PostgresControllerBase
     public async Task<IActionResult> GetDraftInfo(string draftId)
     {
         var draft = await _sleeperService.GetDraftInfo(draftId);
-        
-        
         return Ok(new Draft(draft));
     }
     

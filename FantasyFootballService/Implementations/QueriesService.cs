@@ -19,10 +19,12 @@ public class QueriesService : IQueriesService
             MarketEnum.STD_SLEEPER => GetSleeperRankings(conn),
             MarketEnum.STD_DYNASTY_DADDY_AVG => GetDynastyDaddyAverageRankings(conn),
             MarketEnum.STD_KEEP_TRADE_CUT => GetKeepTradeCutRankings(conn),
+            MarketEnum.STD_FANTASY_CALC => GetFantasyCalcRankings(conn),
             MarketEnum.DYN_AVERAGE => GetAverageRankings(conn, true),
             MarketEnum.DYN_SLEEPER => GetSleeperRankings(conn, true),
             MarketEnum.DYN_DYNASTY_DADDY_AVG => GetDynastyDaddyAverageRankings(conn, true),
             MarketEnum.DYN_KEEP_TRADE_CUT => GetKeepTradeCutRankings(conn, true),
+            MarketEnum.DYN_FANTASY_CALC => GetFantasyCalcRankings(conn, true),
             _ => new List<Player>()
         };
     }
@@ -66,6 +68,15 @@ public class QueriesService : IQueriesService
     private List<Player> GetDynastyDaddyAverageRankings(NpgsqlConnection conn, bool isDynasty = false)
     {
         var cmd = PostgresCommandHelper.GetDynastyDaddyAverageRankings(conn, isDynasty);
+        var strResponse = Convert.ToString(cmd.ExecuteScalar());
+        return string.IsNullOrWhiteSpace(strResponse) 
+            ? new List<Player>() 
+            : JsonSerializer.Deserialize<List<Player>>(strResponse);
+    }
+    
+    private List<Player> GetFantasyCalcRankings(NpgsqlConnection conn, bool isDynasty = false)
+    {
+        var cmd = PostgresCommandHelper.GetFantasyCalcRankings(conn, isDynasty);
         var strResponse = Convert.ToString(cmd.ExecuteScalar());
         return string.IsNullOrWhiteSpace(strResponse) 
             ? new List<Player>() 

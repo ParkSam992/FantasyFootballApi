@@ -14,6 +14,8 @@ public enum MarketEnum
     STD_DYNASTY_DADDY_AVG,
     [Description("REDRAFT: Keep Trade Cut Rankings")]
     STD_KEEP_TRADE_CUT,
+    [Description("REDRAFT: Fantasy Calc Rankings")]
+    STD_FANTASY_CALC,
     [Description("DYNASTY: Average Rankings")]
     DYN_AVERAGE,
     [Description("DYNASTY: Dynasty Daddy Average Rankings")]
@@ -22,4 +24,6 @@ public enum MarketEnum
     DYN_SLEEPER,
     [Description("DYNASTY: Keep Trade Cut Rankings")]
     DYN_KEEP_TRADE_CUT,
+    [Description("DYNASTY: Fantasy Calc Rankings")]
+    DYN_FANTASY_CALC,
 }

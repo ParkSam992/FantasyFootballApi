@@ -10,6 +10,8 @@ public class SleeperLeague
     public string Name { get; set; }
     [JsonPropertyName("season")]
     public string Season { get; set; }
+    [JsonPropertyName("draft_id")]
+    public string DraftId { get; set; }
     
     public string LeagueId
     {

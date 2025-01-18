@@ -37,6 +37,14 @@ public static class PostgresCommandHelper
         return cmd;
     }
     
+    public static NpgsqlCommand GetFantasyCalcRankings(NpgsqlConnection conn, bool isDynasty)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.GET_FANTASY_CALC_RANKINGS, conn);
+        cmd.Parameters.AddWithValue("isDynasty", NpgsqlDbType.Boolean, isDynasty);
+        cmd.Prepare();
+        return cmd;
+    }
+    
     public static NpgsqlCommand GetPlayerTradeValue(NpgsqlConnection conn)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_PLAYER_TRADE_VALUE, conn);
