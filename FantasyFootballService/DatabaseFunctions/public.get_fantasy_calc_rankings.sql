@@ -16,19 +16,24 @@ SELECT JSON_AGG(
                        'OneQbRanking', a."OneQbRanking"::varchar,
                        'TwoQbRanking', a."TwoQbRanking"::varchar
                )
-       ) into rankings
+       ) INTO rankings
 FROM (
          SELECT
              b."SleeperId",
              "FirstName",
              "LastName",
              "Position",
-             "OverallRank" AS "OneQbRanking",
-             "SFOverallRank" AS "TwoQbRanking"
+             b."OverallRank" AS "OneQbRanking",
+             a."OverallRank" AS "TwoQbRanking"
          FROM "FantasyCalcMarketRankings" a
-                  JOIN "DynastyDaddyPlayerData" b ON a."SleeperId" = b."SleeperId"
+                  JOIN "FantasyCalcMarketRankings" b ON a."SleeperId" = b."SleeperId" AND b."IsOneQb"
+                  JOIN "DynastyDaddyPlayerData" c ON a."SleeperId" = c."SleeperId"
          WHERE a."IsDynasty" = isDynasty
+           AND b."IsDynasty" = isDynasty
+           AND NOT a."IsOneQb"
      ) a;
 END
 $$;
+
+alter function get_fantasy_calc_rankings(boolean, out json) owner to sampark99;
 

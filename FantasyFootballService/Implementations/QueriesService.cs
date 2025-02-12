@@ -13,6 +13,7 @@ public class QueriesService : IQueriesService
 {
     public List<Player> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market)
     {
+        // TODO: I want any average rankings to use rank not ADP. I might want rank on everything not adp
         return market switch
         {
             MarketEnum.STD_AVERAGE => GetAverageRankings(conn),

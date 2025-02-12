@@ -167,4 +167,5 @@ public class FantasyFootballController : PostgresControllerBase
     // TODO: Endpoint to add/remove preferred players (they could be highlighted on the FE)
     
     // TODO: Endpoint to manually enter player rankings (in case I wanted to copy over rankings that arent scrapable)
+    // could this be based off a mock draft I fill out myself? give a draftId and it scrapes it to enter rankings?
 }
