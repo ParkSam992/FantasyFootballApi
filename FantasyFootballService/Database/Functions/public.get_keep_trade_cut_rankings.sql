@@ -3,21 +3,21 @@ create function get_keep_trade_cut_rankings(market character varying, OUT rankin
 as
 $$
 BEGIN
-    SELECT JSON_AGG(
-        JSON_BUILD_OBJECT(
-            'SleeperId', a."SleeperId",
-            'FirstName', a."FirstName",
-            'LastName', a."LastName",
-            'Position', a."Position",
-            'Market', CASE
-                         WHEN market ILIKE 'STD' THEN 'KEEP_TRADE_CUT_STD'
-                         ELSE 'KEEP_TRADE_CUT_DYN'
-                      END,
-            'OneQbRanking', a."OneQbRanking"::varchar,
-            'TwoQbRanking', a."TwoQbRanking"::varchar
-        )
-    ) into rankings
-    FROM (
+SELECT JSON_AGG(
+               JSON_BUILD_OBJECT(
+                       'SleeperId', a."SleeperId",
+                       'FirstName', a."FirstName",
+                       'LastName', a."LastName",
+                       'Position', a."Position",
+                       'Market', CASE
+                                     WHEN market ILIKE 'STD' THEN 'KEEP_TRADE_CUT_STD'
+                                     ELSE 'KEEP_TRADE_CUT_DYN'
+                           END,
+                       'OneQbRanking', a."OneQbRanking"::varchar,
+                       'TwoQbRanking', a."TwoQbRanking"::varchar
+               )
+       ) into rankings
+FROM (
          SELECT
              "SleeperId",
              "FirstName",
@@ -36,4 +36,3 @@ END
 $$;
 
 alter function get_keep_trade_cut_rankings(varchar, out json) owner to sampark99;
-

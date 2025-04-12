@@ -51,4 +51,12 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
+
+    public static NpgsqlCommand PlayerSearch(string name, NpgsqlConnection conn)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.PLAYER_SEARCH, conn);
+        cmd.Parameters.AddWithValue("name", NpgsqlDbType.Varchar, name);
+        cmd.Prepare();
+        return cmd;
+    }
 }

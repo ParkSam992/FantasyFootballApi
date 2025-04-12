@@ -1,4 +1,4 @@
-create function get_fantasy_calc_rankings(isdynasty boolean, OUT rankings json) returns json
+create function get_fantasy_calc_rankings(is_dynasty boolean, OUT rankings json) returns json
     language plpgsql
 as
 $$
@@ -10,7 +10,7 @@ SELECT JSON_AGG(
                        'LastName', a."LastName",
                        'Position', a."Position",
                        'Market', CASE
-                                     WHEN isDynasty THEN 'FANTASY_CALC_DYN'
+                                     WHEN is_dynasty THEN 'FANTASY_CALC_DYN'
                                      ELSE 'FANTASY_CALC_STD'
                            END,
                        'OneQbRanking', a."OneQbRanking"::varchar,
@@ -28,8 +28,8 @@ FROM (
          FROM "FantasyCalcMarketRankings" a
                   JOIN "FantasyCalcMarketRankings" b ON a."SleeperId" = b."SleeperId" AND b."IsOneQb"
                   JOIN "DynastyDaddyPlayerData" c ON a."SleeperId" = c."SleeperId"
-         WHERE a."IsDynasty" = isDynasty
-           AND b."IsDynasty" = isDynasty
+         WHERE a."IsDynasty" = is_dynasty
+           AND b."IsDynasty" = is_dynasty
            AND NOT a."IsOneQb"
      ) a;
 END

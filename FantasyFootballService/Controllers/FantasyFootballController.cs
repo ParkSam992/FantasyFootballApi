@@ -163,7 +163,44 @@ public class FantasyFootballController : PostgresControllerBase
         return Ok(await _sleeperService.GetAlreadyDraftedPlayers(draftId));
     }
 
-    
+    [HttpGet]
+    [Route("/playerSearch")]
+    [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public IActionResult PlayerSearch(string name)
+    {
+        NpgsqlConnection conn = null;
+
+        try
+        {
+            conn = OpenConnection();
+            return Ok(_queriesService.PlayerSearch(name, conn));
+        }
+        finally
+        {
+            CloseConnection(conn);
+        }
+    }
+
+    // [HttpGet]
+    // [Route("/{sleeperId}")]
+    // [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
+    // [ProducesResponseType(typeof(BadRequestResult), 400)]
+    // public IActionResult GetPlayerData(string sleeperId)
+    // {
+    //     NpgsqlConnection conn = null;
+    //
+    //     try
+    //     {
+    //         conn = OpenConnection();
+    //         return Ok(_queriesService.PlayerSearch(name, conn));
+    //     }
+    //     finally
+    //     {
+    //         CloseConnection(conn);
+    //     }
+    // }
+
     // TODO: Endpoint to add/remove preferred players (they could be highlighted on the FE)
     
     // TODO: Endpoint to manually enter player rankings (in case I wanted to copy over rankings that arent scrapable)

@@ -10,4 +10,6 @@ public interface IQueriesService
     List<Player> GetPlayerRankingByMarket(NpgsqlConnection conn, MarketEnum market);
 
     List<PlayerTradeValue> GetPlayerTradeValue(NpgsqlConnection conn);
+
+    List<SelectOption> PlayerSearch(string name, NpgsqlConnection conn);
 }
