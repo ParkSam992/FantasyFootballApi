@@ -12,7 +12,7 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-    
+
     public static NpgsqlCommand GetSleeperRankings(NpgsqlConnection conn, bool isDynasty)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_SLEEPER_RANKINGS, conn);
@@ -20,7 +20,7 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-    
+
     public static NpgsqlCommand GetDynastyDaddyAverageRankings(NpgsqlConnection conn, bool isDynasty)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_DYNASTY_DADDY_AVERAGE_RANKINGS, conn);
@@ -28,7 +28,7 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-    
+
     public static NpgsqlCommand GetKeepTradeCutRankings(NpgsqlConnection conn, bool isDynasty)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_KEEP_TRADE_CUT_RANKINGS, conn);
@@ -36,7 +36,7 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-    
+
     public static NpgsqlCommand GetFantasyCalcRankings(NpgsqlConnection conn, bool isDynasty)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_FANTASY_CALC_RANKINGS, conn);
@@ -44,7 +44,7 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-    
+
     public static NpgsqlCommand GetPlayerTradeValue(NpgsqlConnection conn)
     {
         var cmd = new NpgsqlCommand(SqlStrings.GET_PLAYER_TRADE_VALUE, conn);
