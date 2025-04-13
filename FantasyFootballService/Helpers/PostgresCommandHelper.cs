@@ -44,7 +44,6 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
-
     
     public static NpgsqlCommand GetPlayerTradeValue(NpgsqlConnection conn)
     {
