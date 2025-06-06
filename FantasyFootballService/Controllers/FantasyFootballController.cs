@@ -182,24 +182,24 @@ public class FantasyFootballController : PostgresControllerBase
         }
     }
 
-    // [HttpGet]
-    // [Route("/{sleeperId}")]
-    // [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
-    // [ProducesResponseType(typeof(BadRequestResult), 400)]
-    // public IActionResult GetPlayerData(string sleeperId)
-    // {
-    //     NpgsqlConnection conn = null;
-    //
-    //     try
-    //     {
-    //         conn = OpenConnection();
-    //         return Ok(_queriesService.PlayerSearch(name, conn));
-    //     }
-    //     finally
-    //     {
-    //         CloseConnection(conn);
-    //     }
-    // }
+    [HttpGet]
+    [Route("/{sleeperId}/{market}")]
+    [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public IActionResult GetPlayerData(string sleeperId, string market)
+    {
+        NpgsqlConnection conn = null;
+    
+        try
+        {
+            conn = OpenConnection();
+            return Ok(_queriesService.GetPlayerData(sleeperId, market, conn));
+        }
+        finally
+        {
+            CloseConnection(conn);
+        }
+    }
 
     // TODO: Endpoint to add/remove preferred players (they could be highlighted on the FE)
     

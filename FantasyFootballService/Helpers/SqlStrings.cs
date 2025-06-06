@@ -14,6 +14,8 @@ public class SqlStrings
     
     public const string GET_PLAYER_TRADE_VALUE = "select get_player_trade_value();";
 
-    public const string PLAYER_SEARCH = "select player_search(@name)";
+    public const string PLAYER_SEARCH = "select player_search(@name);";
+
+    public const string GET_PLAYER_DATA = "select get_player_data(@sleeperId, @market);";
 
 }

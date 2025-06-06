@@ -46,6 +46,15 @@ public class QueriesService : IQueriesService
             ? new List<PlayerTradeValue>() 
             : JsonSerializer.Deserialize<List<PlayerTradeValue>>(strResponse);
     }
+    
+    public PlayerData GetPlayerData(string sleeperId, string market, NpgsqlConnection conn)
+    {
+        var cmd = PostgresCommandHelper.GetPlayerData(sleeperId, market, conn);
+        var strResponse = Convert.ToString(cmd.ExecuteScalar());
+        return string.IsNullOrWhiteSpace(strResponse) 
+            ? new PlayerData() 
+            : JsonSerializer.Deserialize<PlayerData>(strResponse);
+    }
 
     private List<Player> GetAverageRankings(NpgsqlConnection conn, bool isDynasty = false)
     {

@@ -59,4 +59,13 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
+
+    public static NpgsqlCommand GetPlayerData(string sleeperId, string market, NpgsqlConnection conn)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.GET_PLAYER_DATA, conn);
+        cmd.Parameters.AddWithValue("sleeperId", NpgsqlDbType.Varchar, sleeperId);
+        cmd.Parameters.AddWithValue("market", NpgsqlDbType.Varchar, market);
+        cmd.Prepare();
+        return cmd;
+    }
 }

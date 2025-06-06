@@ -12,4 +12,6 @@ public interface IQueriesService
     List<PlayerTradeValue> GetPlayerTradeValue(NpgsqlConnection conn);
 
     List<SelectOption> PlayerSearch(string name, NpgsqlConnection conn);
+
+    PlayerData GetPlayerData(string sleeperId, string market, NpgsqlConnection conn);
 }
