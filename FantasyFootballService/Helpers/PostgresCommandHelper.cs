@@ -12,6 +12,13 @@ public static class PostgresCommandHelper
         cmd.Prepare();
         return cmd;
     }
+    
+    public static NpgsqlCommand GetCombinedRankings(NpgsqlConnection conn)
+    {
+        var cmd = new NpgsqlCommand(SqlStrings.GET_COMBINED_RANKINGS, conn);
+        cmd.Prepare();
+        return cmd;
+    }
 
     public static NpgsqlCommand GetSleeperRankings(NpgsqlConnection conn, bool isDynasty)
     {

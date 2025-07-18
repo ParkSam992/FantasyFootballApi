@@ -6,6 +6,8 @@ public class SqlStrings
 
     public const string GET_SLEEPER_RANKINGS = "select get_sleeper_rankings(@market);";
 
+    public const string GET_COMBINED_RANKINGS = "select get_combined_rankings()";
+
     public const string GET_DYNASTY_DADDY_AVERAGE_RANKINGS = "select get_dynasty_daddy_average_rankings(@market);";
 
     public const string GET_KEEP_TRADE_CUT_RANKINGS = "select get_keep_trade_cut_rankings(@market);";

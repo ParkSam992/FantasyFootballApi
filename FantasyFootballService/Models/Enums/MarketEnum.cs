@@ -26,4 +26,6 @@ public enum MarketEnum
     DYN_KEEP_TRADE_CUT,
     [Description("DYNASTY: Fantasy Calc Rankings")]
     DYN_FANTASY_CALC,
+    [Description("COMBINED: Redraft and Dynasty Rankings Averaged")]
+    COMBINED_AVERAGE,
 }

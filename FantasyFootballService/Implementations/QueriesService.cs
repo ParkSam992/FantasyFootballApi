@@ -25,6 +25,7 @@ public class QueriesService : IQueriesService
             MarketEnum.DYN_DYNASTY_DADDY_AVG => GetDynastyDaddyAverageRankings(conn, true),
             MarketEnum.DYN_KEEP_TRADE_CUT => GetKeepTradeCutRankings(conn, true),
             MarketEnum.DYN_FANTASY_CALC => GetFantasyCalcRankings(conn, true),
+            MarketEnum.COMBINED_AVERAGE => GetCombinedRankings(conn),
             _ => new List<Player>()
         };
     }
@@ -59,6 +60,15 @@ public class QueriesService : IQueriesService
     private List<Player> GetAverageRankings(NpgsqlConnection conn, bool isDynasty = false)
     {
         var cmd = PostgresCommandHelper.GetAverageRankings(conn, isDynasty);
+        var strResponse = Convert.ToString(cmd.ExecuteScalar());
+        return string.IsNullOrWhiteSpace(strResponse) 
+            ? new List<Player>() 
+            : JsonSerializer.Deserialize<List<Player>>(strResponse);
+    }
+    
+    private List<Player> GetCombinedRankings(NpgsqlConnection conn)
+    {
+        var cmd = PostgresCommandHelper.GetCombinedRankings(conn);
         var strResponse = Convert.ToString(cmd.ExecuteScalar());
         return string.IsNullOrWhiteSpace(strResponse) 
             ? new List<Player>() 
