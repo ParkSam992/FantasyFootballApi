@@ -75,6 +75,37 @@ public class FantasyFootballController : PostgresControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("/getLeagueKeepers/{leagueId}")]
+    [ProducesResponseType(typeof(List<LeagueMember>), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    public async Task<IActionResult> GetLeagueKeepers(string leagueId,
+        [FromQuery] MarketEnum market = MarketEnum.STD_SLEEPER)
+    {
+        NpgsqlConnection conn = null;
+
+        try
+        {
+            conn = OpenConnection();
+
+            var roster = await _sleeperService.GetLeagueRosters(leagueId);
+            var playerRankings = _queriesService.GetPlayerRankingByMarket(conn, market);
+
+            var leagueMembers = roster.Select(lm =>
+                new LeagueMember(lm, PlayerDataMapper.GetPlayerListFromIdList(playerRankings, lm.Keepers ?? new List<string>()))).ToList();
+
+            leagueMembers =
+                PlayerDataMapper.GetLeagueMemberNames(leagueMembers, await _cache.GetSleeperLeagueUsersAsync(leagueId));
+
+            return Ok(leagueMembers);
+
+        }
+        finally
+        {
+            CloseConnection(conn);
+        }
+    }
+
 
     [HttpGet]
     [Route("/getPlayerRankings")]
@@ -158,9 +189,27 @@ public class FantasyFootballController : PostgresControllerBase
     [Route("/getDraftedPlayers/{draftId}")]
     [ProducesResponseType(typeof(List<SleeperDraftedPlayer>), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
-    public async Task<IActionResult> GetDraftedPlayers(string draftId)
+    public async Task<IActionResult> GetDraftedPlayers(string draftId, [FromQuery] string leagueId = null)
     {
-        return Ok(await _sleeperService.GetAlreadyDraftedPlayers(draftId));
+        var draftedPlayers = await _sleeperService.GetAlreadyDraftedPlayers(draftId) ?? new List<SleeperDraftedPlayer>();
+
+        if (!string.IsNullOrWhiteSpace(leagueId))
+        {
+            var rosters = await _sleeperService.GetLeagueRosters(leagueId);
+            var keepers = rosters.SelectMany(r => (r.Keepers ?? new List<string>()).Select(playerId =>
+                new SleeperDraftedPlayer
+                {
+                    SleeperId = playerId,
+                    DraftId = draftId,
+                    PickNumber = 0,
+                    PickedBy = r.OwnerId,
+                    IsKeeper = true
+                }));
+
+            draftedPlayers = draftedPlayers.Concat(keepers).ToList();
+        }
+
+        return Ok(draftedPlayers);
     }
 
     [HttpGet]

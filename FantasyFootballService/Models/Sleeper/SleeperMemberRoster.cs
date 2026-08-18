@@ -10,4 +10,7 @@ public class SleeperMemberRoster
     
     [JsonPropertyName("players")]
     public List<string> Roster { get; set; }
+
+    [JsonPropertyName("keepers")]
+    public List<string> Keepers { get; set; }
 }
